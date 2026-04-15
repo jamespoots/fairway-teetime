@@ -1,0 +1,720 @@
+<!DOCTYPE html><html lang="en" data-ng-app="ezLinks" data-ng-controller="generalController as generalController" data-ng-init="generalController.init()" class="hydrated ng-scope"><head><style type="text/css">.uib-tab > div{position:relative;display:block;padding:10px 15px;outline:0;color:#337ab7;}.uib-tab > div:focus,.uib-tab > div:hover{background-color:#eee;color:#23527c;}.uib-tab.disabled > div{color:#777;}.uib-tab.disabled > div:focus,.uib-tab.disabled > div:hover{color:#777;cursor:not-allowed;background-color:transparent;}.nav-tabs > .uib-tab > div{margin-right:2px;line-height:1.42857143;border:1px solid transparent;border-radius:4px 4px 0 0;}.nav-tabs > .uib-tab > div:hover{border-color:#eee #eee #ddd;}.nav-tabs > .uib-tab.active > div,.nav-tabs > .uib-tab.active > div:focus,.nav-tabs > .uib-tab.active > div:hover{color:#555;cursor:default;background-color:#fff;border-color:#ddd #ddd transparent #ddd;}.nav-pills > .uib-tab > div{border-radius:4px;}.nav-pills > .uib-tab.active > div,.nav-pills > .uib-tab.active > div:focus,.nav-pills > .uib-tab.active > div:hover{color:#fff;background-color:#337ab7;}</style><style type="text/css">.ng-animate.item:not(.left):not(.right){-webkit-transition:0s ease-in-out left;transition:0s ease-in-out left}</style><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>
+    <base href="/">
+    <meta charset="utf-8"><style data-styles="">sensible-weather-guarantee,swui-theme,swui-shadow-box,swui-rain-svg,swui-temperature-svg,swui-text,swui-column,swui-section-container,swui-tier-svg,swui-caret-down,swui-coin-svg,swui-speech-bubble-svg,swui-umbrella-svg,swui-button,swui-expect-container,swui-coverage-tiers,swui-weather-description,swui-footer,swui-checkmark-svg,swui-close-svg,swui-divider-svg,swui-loading-text,swui-sun-svg,swui-expect-box,swui-accordion,swui-coverage-tier-row,swui-peril-svg,swui-container,swui-sensible-svg,sensible-weather-details,swui-modal,swui-link-button{visibility:hidden}.hydrated{visibility:inherit}</style>
+    <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Pragma-directive: no-cache">
+    <meta http-equiv="Cache-directive: no-cache">
+    <meta http-equiv="Expires" content="0">
+    <!-- ngIf: facebookDomainVerification -->
+    <title>Teal Bend - Online tee times made EZ</title>
+    <link rel="stylesheet" href="assets/css/main.min.css">
+    <!-- CSS Bundle Managed in gulpfile.js -->
+    <link rel="stylesheet" href="app/all-140d408b50.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="bower_components/angular-busy/angular-busy.min.css">
+
+    <style type="text/css">@font-face {font-family:Arvo;font-style:normal;font-weight:400;src:url(/cf-fonts/s/arvo/5.0.18/latin/400/normal.woff2);unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;font-display:swap;}</style>
+    <script async="" src="//www.googletagmanager.com/gtm.js?id=GTM-TC3W9J"></script><script type="module" src="https://static.sensibleweather.io/js-sdk/v1.5.2/build/sensible-sdk.esm.js"></script>
+    <script nomodule="" src="https://static.sensibleweather.io/js-sdk/v1.5.2/build/sensible-sdk.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://static.sensibleweather.io/js-sdk/v1.5.2/assets/css/fonts.css">
+    <script type="text/javascript">
+        var dataLayer = [{ 'Event': 'Load', 'Page Hostname': window.location.hostname }];
+    </script>
+    <script type="text/javascript">
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    '//www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-TC3W9J');
+    </script>
+</head>
+<body>
+    <!-- Google Tag Manager -->
+    <noscript>
+        <iframe src="//www.googletagmanager.com/ns.html?id=GTM-TC3W9J"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager -->
+    <script type="text/javascript">
+        // fix for IE9
+        (function () {
+            window.console = window.console || {};
+            window.console.log = window.console.log || function () { };
+        })();
+    </script>
+    <script type="text/ng-template" id="loading.html">
+        <div style="{{loadingIndicatorStyle}}">
+            <div class="loading-indicator">
+                <i class="fa-li fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </script>
+    <!-- ngInclude: 'app/styles.html' --><div data-ng-include="'app/styles.html'" class="ng-scope"><style class="ng-binding ng-scope">
+    .filter li .date-input {
+        background-image: -ms-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -moz-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -o-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #000000), color-stop(1, #c9980d));
+        background-image: -webkit-linear-gradient(top, #000000 0%, #c9980d 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#c9980d'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #000000 1%, #c9980d 100%);
+    }
+
+    .in-box {
+        border: 1px solid #000000;
+    }
+
+    /* line 8, ../scss/modules/_home.scss */
+    .horizontal-separator {
+        border-top: 1px solid #000000;
+    }
+
+    /* line 12, ../scss/modules/_home.scss */
+    .vertical-separator {
+        border-right: 1px solid #000000;
+    }
+
+    .btn-default {
+        background-image: -ms-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -moz-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -o-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #000000), color-stop(1, #c9980d));
+        background-image: -webkit-linear-gradient(top, #000000 0%, #c9980d 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#c9980d'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #000000 1%, #c9980d 100%);
+    }
+
+    .or-spacer .mask:after {
+        box-shadow: 0 0 8px #000000;
+    }
+
+    .or-spacer .mask:after {
+        box-shadow: 0 0 8px #000000;
+    }
+
+    .or-spacer-vertical.left .mask:after {
+        box-shadow: 0 0 8px #000000;
+    }
+
+    .or-spacer-vertical.right .mask:before {
+        box-shadow: 0 0 8px #000000;
+    }
+
+    .filter li .date-input {
+        background-image: -ms-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -moz-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -o-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #000000), color-stop(1, #c9980d));
+        background-image: -webkit-linear-gradient(top, #000000 0%, #c9980d 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#c9980d'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #000000 1%, #c9980d 100%);
+    }
+
+    .ui-widget-header {
+        background: #000000 !important;
+    }
+
+    .primary-btn {
+        background-image: -ms-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -moz-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -o-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #000000), color-stop(1, #c9980d));
+        background-image: -webkit-linear-gradient(top, #000000 0%, #c9980d 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#c9980d'); zoom: 1;
+
+        background-image: linear-gradient(to bottom, #000000 1%, #c9980d 100%);
+    }
+
+    .select-pricing-modal .pricing-players label.active {
+        background: #c9980d;
+    }
+
+    .select-pricing-modal .price-listing:hover, .select-pricing-modal .price-listing.active {
+        background: #000000;
+    }
+
+    .ui-widget-header {
+        background: #c9980d !important;
+    }
+
+    .ui-widget-header .ui-datepicker-prev, .ui-widget-header .ui-datepicker-next {
+        color: #fff !important;
+        background: #c9980d !important;
+        }
+
+    .ngrs-range-slider .ngrs-join {
+        background-color: #c9980d;
+        background-image: linear-gradient(#c9980d, #c9980d);
+    }
+
+    a {
+        color: #c9980d;
+    }
+
+    .filter li .filter-window .ui-widget-header {
+        background: #c9980d;
+    }
+
+    .top-nav .account-menu ul li:hover {
+        background-color: #c9980d;
+    }
+
+    .top-nav .account-menu .account-details a:hover {
+        color: #c9980d;
+    }
+
+    .select-pricing-modal .pricing-players label.active {
+        background: #c9980d;
+    }
+
+    .select-pricing-modal ul.selectPricingList li .price-listing:hover, .select-pricing-modal ul.selectPricingList li .price-listing.active {
+        background: #c9980d;
+    }
+
+    .confirmation-page h1 .num, .cart-page h1 .num {
+        background: #c9980d;
+        box-shadow: 0px 0px 2px #c9980d,inset -1px 0px 2px #fff;
+    }
+
+    .page-header {
+        border-bottom: solid 5px #c9980d;
+    }
+
+    .reservations .reservation-list .actions i {
+        color: #000000;
+    }
+
+    .internal-footer a {
+        color: #c9980d;
+    }
+
+    .course {
+        background-color: #000000 !important;
+        color: #FFFFFF !important;
+    }
+
+    header {
+        border-bottom: 3px solid #000000;
+    }
+
+    footer {
+        border-top: 3px solid #000000;
+    }
+
+    .teeSheetHeader {
+        background-image: -ms-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -moz-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -o-linear-gradient(top, #000000 1%, #c9980d 100%);
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0.01, #000000), color-stop(1, #c9980d));
+        background-image: -webkit-linear-gradient(top, #000000 0%, #c9980d 100%);
+        filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#000000', endColorstr='#c9980d');
+        zoom: 1;
+        background-image: linear-gradient(to bottom, #000000 1%, #c9980d 100%);
+    }
+
+    @media (max-width: 767px) {
+        header {
+            background: url() center no-repeat;
+            height: 60px;
+            display: none;
+        }
+
+        header .logo {
+            max-height: 57px;
+        }
+
+        footer {
+            background: url() center no-repeat;
+            height: 60px;
+            display: none;
+        }
+    }
+
+    @media (min-width: 768px) and (max-width: 1200px) {
+        header {
+            background: url() center no-repeat;
+            height: 100px;
+            display: none;
+        }
+
+        header .logo {
+            max-height: 97px;
+        }
+
+        footer {
+            background: url() center no-repeat;
+            height: 100px;
+            display: none;
+        }
+    }
+
+    @media (min-width: 1201px) {
+        header {
+            background: url() center no-repeat;
+            height: 100px;
+            display: none;
+        }
+
+        header .logo {
+            max-height: 97px;
+        }
+
+        footer {
+            background: url() center no-repeat;
+            height: 100px;
+            display: none;
+        }
+    }
+</style>
+<a href="https://tealbend.ezlinksgolf.com/cdn-cgi/content?id=45bn8fiCdQDU_EzUQbmmG3AxDdgN_Vm14sXf3DjsWb4-1776224232-1.1.1.1-tSI3rEdJGnX54JWUm0wZeXUnvAIPL6qBZcsJXRG0NrE" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important" class="ng-scope"></a></div>
+    <!-- ngInclude: 'app/modals.html' --><div data-ng-include="'app/modals.html'" class="ng-scope"><!-- alert (OK) alert -->
+<script type="text/ng-template" id="alert.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <!-- body -->
+        <div class="col-xs-12">
+            <h1 title="title" style="width: inherit"><strong data-ng-bind-html="ec.title"></strong>&shy;</h1>
+            <div data-ng-bind-html="ec.html" ></div>
+        </div>
+
+        <!-- button(s) -->
+        <div class="col-xs-12 center">
+            <button class="btn btn-10 btn-default" data-ng-click="ec.onYesClick()" data-ng-enter="ec.onYesClick()">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- confirm (OK/CANCEL or YES/NO) alert -->
+<script type="text/ng-template" id="confirm.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal" data-ng-enter="ec.onYesClick()">
+        <!-- title + body -->
+        <div class="col-xs-12">
+            <h2 title="title"><strong data-ng-bind="ec.title"></strong>&shy;</h2>
+            <div class="m-b-15" data-ng-bind-html="ec.html" ></div>
+        </div>
+
+        <!-- button(s) -->
+        <div class="col-xs-12">
+            <div class="col-xs-6 right">
+                <button class="btn btn-10 btn-default" data-ng-click="ec.onYesClick()">Yes</button>
+            </div>
+            <div class="col-xs-6 left">
+                <button class="btn btn-10 btn-default gray" data-ng-click="ec.onNoClick()">No</button>
+            </div>
+        </div>
+    </div>
+</script>
+
+<!-- skill set alert -->
+<script type="text/ng-template" id="alertSkillSet.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <div class="col-xs-12" title="To learn more about Find a Game please go to: http://www.findagame.io/">
+            <a href="http://www.findagame.io/" target="_blank">
+                <h1><strong data-ng-bind-html="ec.title" ></strong></h1>
+            </a>
+            <div data-ng-bind-html="ec.html"></div>
+        </div>
+        <div class="col-xs-12 m-t-05 min-h-30">
+            <div class="col-xs-12">
+                <select name="SkillLevelID" class="edit" data-ng-model="ec.skillLevelId" ng-change="ec.onSkillSetUpdate();" autofocus>
+                    <option value="" disabled>Undefined</option>
+                    <option value="1">70's</option>
+                    <option value="2">80's</option>
+                    <option value="3">90's</option>
+                    <option value="4">100's</option>
+                    <option value="0">Prefer not to share</option>
+                </select>
+
+                <span data-ng-bind="ec.skillLevelBinding()" class="read hide"></span>
+            </div>
+        </div>
+        <div class="col-xs-12 center">
+            <button id="fgOKButton" class="btn btn-10 btn-default" data-ng-disabled="!ec.validSkillSet" data-ng-click="ec.onSkillSetSubmitClick()">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- modify reservation alert -->
+<script type="text/ng-template" id="alertModifyReservation.html" controller="ec" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <h1><strong data-ng-bind-html="ec.title" ></strong></h1>
+        <div class="col-xs-12" title="To change the number of golfers in your reservation, select a number to delete from reservation.">
+            <div data-ng-bind-html="ec.html"></div>
+        </div>
+        <div class="col-xs-12 m-t-05 min-h-30">
+            <div class="col-xs-12">
+                <select id="numGolfers" name="numberOfPlayers" class="preSearch-select-player" data-ng-model="ec.numGolfers"
+                        ng-options="golferNumList.value as golferNumList.value for golferNumList in ec.golferNumList"
+                        ng-init="ec.golferNumList[$index] = ec.golferNumList[$index].value" title="Select Number of Players to Remove From Reservation" ></select>
+            </div>
+        </div>
+        <div class="col-xs-6  center">
+            <button class="btn btn-10 btn-default gray" data-ng-click="ec.onNoClick()">Cancel</button>
+        </div>
+        <div class="col-xs-6 center">
+            <button class="btn btn-10 btn-default" data-ng-click="ec.onModifyReservationOKClick()">OK</button>
+        </div>
+    </div>
+</script>
+
+<!-- calendar alert -->
+<script type="text/ng-template" id="alertSendToCalendar.html" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal center" data-ng-enter="ec.onNoClick()">
+        <div class="col-xs-12 center" title="Choose a Calendar to Update">
+            <h1>
+                <strong>{{message}}</strong>
+            </h1>
+        </div>
+        <div class="add-to-calendar center" id="calendarAnchors">
+            <div>
+                <a target="_blank" href="{{hrefGoogleCalendar}}">Google Calendar</a><br />
+            </div>
+            <div class="{{showYahoo}}">
+                <a target="_blank" href="{{hrefYahooCalendar}}">Yahoo Calendar</a><br />
+            </div>
+            <div class="{{showOutlook}}">
+                <a target="_blank" href="{{hrefOutlookCalendar}}">Outlook Calendar</a><br />
+            </div>
+            <div>
+                <a href="" data-ng-click="downloadIcs()" download="TeeTimeEvent.ics">{{iCal}}</a><br />
+            </div>
+        </div>
+        <br />
+        <div class="col-xs-12 center">
+            <button class="btn btn-10 btn-default green center" data-ng-click="ec.onNoClick()">Go Back</button>
+        </div>
+    </div>
+</script>
+
+<!-- type in name of golfer -->
+<script type="text/ng-template" id="enterGolferName.html" controller="ec" class="ng-scope">
+    <div class="col-xs-12 p-b-10 p-t-10 confirm-modal">
+        <h1><strong data-ng-bind-html="ec.title" ></strong></h1>
+        <div class="col-xs-12" title="Please type in the name of a player">
+            <div data-ng-bind-html="ec.html" ></div>
+        </div>
+        <div class="col-xs-12 m-t-05 min-h-30">
+            <div class="col-xs-12">
+                <input type="text" placeholder="Last Name, First Name" id="golferName"
+                       data-ng-model="ec.golferName" maxlength="50"
+                       data-ng-model-options="{ debounce: 500 }"
+                       class="form-control player-text-box"
+                       title="Enter Golfer Name" />
+            </div>
+        </div>
+        <div class="col-xs-6  center">
+            <button class="btn btn-10 btn-default dark" data-ng-click="ec.onCancelClick()">Cancel</button>
+        </div>
+        <div class="col-xs-6 center">
+            <button class="btn btn-10 btn-default" data-ng-click="ec.onOKClick()">OK</button>
+        </div>
+    </div>
+</script><a href="https://tealbend.ezlinksgolf.com/cdn-cgi/content?id=8O4XUAtnbEhwdXhjg_m_31eIwHdNdVe.ytiofFuPkP4-1776224232-1.1.1.1-xBUDXSVSOSWH1DolWm.hG4bbmahQsJ65RmHIWymDVCI" aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important" class="ng-scope"></a></div>
+    <div>
+        <div class="loading-div" cg-busy="gcIsLoadingDfd"><div class="cg-busy cg-busy-backdrop cg-busy-backdrop-animation ng-scope ng-hide" ng-show="$cgBusyIsActive() === true"></div><div class="cg-busy cg-busy-animation ng-scope ng-hide" ng-show="$cgBusyIsActive() === true">
+        <div style="">
+            <div class="loading-indicator">
+                <i class="fa-li fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div></div>
+        <div data-ng-show="!isLoading" class="">
+            <!-- ngIf: !isSafariIniFrame --><!-- ngInclude: 'app/shared/header/header.html' --><div ng-if="!isSafariIniFrame" class="hidden-print ng-scope" data-ng-include="'app/shared/header/header.html'"><div data-ng-controller="headerController" class="container m-b-10 col-xs-12 nopadding ng-scope" data-ng-init="init()">    
+    <header class="m-b-10" data-ng-click="customerURL()"></header>
+</div>
+</div><!-- end ngIf: !isSafariIniFrame -->
+            <div class="container nopadding-xs">
+                <!-- ngIf: !hideCurrentTime --><div ng-if="!hideCurrentTime" class="current-time col-xs-12 right m-t-20 nopadding hidden-xs ng-binding ng-scope" data-ng-bind="(formatDate | date:'EEEE, MMMM dd, yyyy hh:mm:ss a')">Tuesday, April 14, 2026 08:59:55 PM</div><!-- end ngIf: !hideCurrentTime -->
+                <!-- uiView: undefined --><ui-view name="mainView" class="col-xs-12 nopadding ng-scope"><div class="search-result ng-scope" ng-app="ezLinks" ng-controller="searchController as ec" cg-busy="ec.isLoadingDfd" style="position: relative;">
+    <!-- ngIf: !ec.isSafariIniFrame --><div data-ng-if="!ec.isSafariIniFrame" class="row row-offcanvas row-offcanvas-left col-xs-12 nopadding ng-scope" data-ng-class="{ 'active': ec.showMobileFilters }">
+        <input type="hidden" id="csrfToken" value="" style="">
+
+        <!-- ngIf: ec.isInMoveReservationState -->
+
+        <div class="col-xs-6 col-sm-3 sidebar-offcanvas nopadding search-filter-height" data-ng-class="ec.filterHeightClass()" id="sidebar" role="navigation">
+
+            <ul class="filter">
+                <!-- date-and-time picker (desktop and search-and-hold) -->
+                <li data-ng-class="ec.isHideDateTimePicker()" class="hidden-xs">
+                    <div class="date-input">
+                        <!-- calendar -->
+                        <input type="text" datepicker="" id="pickerDate" name="pickerDate" data-ng-model="ec.filterSettings.date" title="Select a date to reserve a tee time" alt="Select a date to reserve a tee time" placeholder="Click here for date" data-ng-change="ec.onDateChange()" min-date="ec.minDate" max-date="ec.maxDate" aria-describedby="pickerDate" aria-labelledby="pickerDate" style="margin-bottom: 0px;" ng-disabled="ec.isLoading" class="ng-pristine ng-untouched ng-valid ng-isolate-scope hasDatepicker" disabled="disabled">
+                        <label aria-labelledby="pickerDate" for="pickerDate" title="Select a date to reserve a tee time" aria-describedby="pickerDate" class="btn" onclick="javascript:void(0)" style="padding-top: 5px; padding-bottom: 0px; border-top: 0px; border-bottom: 0px; height: 0px;">
+                            <i alt="Select a date to reserve a tee time" class="fa fa-calendar" title="Select a date to reserve a tee time" aria-describedby="pickerDate"></i>­
+                        </label>
+
+                        <!-- time range slider -->
+                        <label style="color: #ffffff; text-align: center; top: 0px;" class="ng-binding">5:00 AM–7:00 PM</label>
+                        <div class="ngrs-range-slider ng-isolate-scope div-disabled" range-slider="" style="margin: 10px 0 0px;" on-handle-up="ec.onTeeTimeFilterHandleUp()" pin-handle="none" prevent-equal-min-max="!ec.isSearchAndHold" min="ec.timeRange.min" max="ec.timeRange.max" model-min="ec.timeRange.userMinOne" model-max="ec.timeRange.userMaxOne" step="30" ng-class="{ 'div-disabled': ec.isLoading}"><div class="ngrs-runner"><div class="ngrs-handle ngrs-handle-min" style="left: 0%; display: block;"><i></i></div><div class="ngrs-handle ngrs-handle-max" style="left: 100%; display: block;"><i></i></div><div class="ngrs-join" style="left: 0%; right: 0%;"></div></div><div class="ngrs-value-runner"><div class="ngrs-value ngrs-value-min ng-hide" ng-show="showValues"><div class="ng-binding">300</div></div><div class="ngrs-value ngrs-value-max ng-hide" ng-show="showValues"><div class="ng-binding">1140</div></div></div></div>
+                        <div class="search-timeofplayhint ng-binding" style="color: #ffffff; text-align: center;"></div>
+                    </div>
+                </li>
+
+                <!-- time-of-day filter (mobile only) -->
+                <!-- ngIf: ec.canShowTimeOfDayFilter() --><li class="visible-xs ng-scope" data-ng-class="ec.timeOfDayFilterClass()" data-ng-if="ec.canShowTimeOfDayFilter()">
+                    <filterheader data-ng-click="ec.onTimeOfDayFilterClick()">
+                        Time of Day<i class="fa toggle-arrow fa-chevron-up" data-ng-class="ec.timeOfDayHeaderArrowClass()"></i>
+                    </filterheader>
+                    <div class="filter-window slider filter-body in collapse" uib-collapse="ec.isTimeOfDayFilterCollapsed" aria-expanded="true" aria-hidden="false" style="height: auto;">
+                        <label class="ng-binding">5:00 AM–7:00 PM</label>
+                        <div class="ngrs-range-slider ng-isolate-scope div-disabled" range-slider="" on-handle-up="ec.onTimeOfDaySliderHandleUp()" pin-handle="none" prevent-equal-min-max="!ec.isSearchAndHold" min="ec.timeRange.min" max="ec.timeRange.max" model-min="ec.timeRange.userMinOne" model-max="ec.timeRange.userMaxOne" step="30" ng-class="{ 'div-disabled': ec.isLoading}"><div class="ngrs-runner"><div class="ngrs-handle ngrs-handle-min" style="left: 0%; display: block;"><i></i></div><div class="ngrs-handle ngrs-handle-max" style="left: 100%; display: block;"><i></i></div><div class="ngrs-join" style="left: 0%; right: 0%;"></div></div><div class="ngrs-value-runner"><div class="ngrs-value ngrs-value-min ng-hide" ng-show="showValues"><div class="ng-binding">300</div></div><div class="ngrs-value ngrs-value-max ng-hide" ng-show="showValues"><div class="ng-binding">1140</div></div></div></div>
+                    </div>
+                </li><!-- end ngIf: ec.canShowTimeOfDayFilter() -->
+
+                <!-- players filter-->
+                <!-- ngIf: ec.showPlayersFilter --><li data-ng-class="ec.playersFilterClass()" data-ng-if="ec.showPlayersFilter" class="ng-scope">
+                    <filterheader data-ng-click="ec.onPlayersFilterArrowClick()">
+                        Players<i class="fa toggle-arrow fa-chevron-up" data-ng-class="ec.playersHeaderArrowClass()"></i>
+                    </filterheader>
+                    <div uib-collapse="ec.isPlayersFilterCollapsed" class="in collapse" aria-expanded="true" aria-hidden="false" style="height: auto;">
+                        <div class="btn-group col-xs-12 menu-dropdown dropdown" uib-dropdown="">
+                            <button id="players-button" type="button" class="btn btn-white col-xs-12 dropdown-toggle" uib-dropdown-toggle="" ng-disabled="ec.isLoading" aria-haspopup="true" aria-expanded="false" disabled="disabled">
+                                <div class="dropdown-selected-item col-xs-6">
+                                    <span data-ng-bind="ec.playersFilterDataBinding()" class="ng-binding">4</span>
+                                </div>
+                                <div class="dropdown-selected-item-caret col-xs-6">
+                                    <span class="caret"></span>
+                                </div>
+                            </button>
+                            <ul uib-dropdown-menu="" role="menu" aria-labelledby="players-button" class="col-sm-12 dropdown-menu">
+                                <!-- ngRepeat: p in ec.data.NumPlayersList --><li data-ng-repeat="p in ec.data.NumPlayersList" role="menuitem" data-ng-click="ec.onPlayersFilterChange($index)" class="ng-scope">
+                                    <a href="javascript:void(0)" data-ng-bind="p" class="ng-binding">1</a>
+                                </li><!-- end ngRepeat: p in ec.data.NumPlayersList --><li data-ng-repeat="p in ec.data.NumPlayersList" role="menuitem" data-ng-click="ec.onPlayersFilterChange($index)" class="ng-scope">
+                                    <a href="javascript:void(0)" data-ng-bind="p" class="ng-binding">2</a>
+                                </li><!-- end ngRepeat: p in ec.data.NumPlayersList --><li data-ng-repeat="p in ec.data.NumPlayersList" role="menuitem" data-ng-click="ec.onPlayersFilterChange($index)" class="ng-scope">
+                                    <a href="javascript:void(0)" data-ng-bind="p" class="ng-binding">3</a>
+                                </li><!-- end ngRepeat: p in ec.data.NumPlayersList --><li data-ng-repeat="p in ec.data.NumPlayersList" role="menuitem" data-ng-click="ec.onPlayersFilterChange($index)" class="ng-scope">
+                                    <a href="javascript:void(0)" data-ng-bind="p" class="ng-binding">4</a>
+                                </li><!-- end ngRepeat: p in ec.data.NumPlayersList -->
+                            </ul>
+                        </div>
+                        <hr class="clear" style="margin-bottom: 0">
+
+                    </div>
+                </li><!-- end ngIf: ec.showPlayersFilter -->
+
+                <!-- holes filter -->
+                <!-- ngIf: ec.showHolesFilter -->
+
+                <!-- price option filter -->
+                <!-- ngIf: ec.showPriceOptionsFilter -->
+
+                <!-- Country filter -->
+                <!-- ngIf: ec.showCountryFilter -->
+
+                <!-- State filter -->
+                <!-- ngIf: ec.showStateFilter -->
+
+                <!-- City filter -->
+                <!-- ngIf: ec.showCityFilter -->
+
+                <!-- Course filter -->
+                <!-- ngIf: ec.showCourseFilter -->
+
+                <!-- Price Range filter -->
+                <!-- ngIf: ec.canShowPriceRangeFilter() -->
+            </ul>
+
+            <!-- -- search button ---->
+            <!-- ngIf: ec.isSearchAndHold -->
+            <!--/div>-->
+        </div>
+
+        <div class="col-xs-12 col-sm-9 content top-menu xs-nopadding-x">
+
+            <!-- nav tag is used for screen readers to aid the disabled -- generally used with big blocks of links being presented (probably original developer code) -->
+            <nav class="top-nav col-xs-12">
+
+                <!-- search result data -->
+                <!-- ngIf: !ec.isSearchAndHold --><div class="search-result-data col-sm-7 col-xs-12 ng-scope" data-ng-if="!ec.isSearchAndHold">
+                    <div>
+                        <strong data-ng-bind="ec.dateAndPlayersReadout()" class="ng-binding">04/14/2026 / 4 players</strong>
+                    </div>
+                    <div>
+                        <strong data-ng-bind="ec.teetimeCountReadout()" class="ng-binding">0 tee times</strong>
+                    </div>
+                    <!-- ngIf: ec.canShowHolesReadout() --><div data-ng-if="ec.canShowHolesReadout()" class="ng-scope">
+                        <span data-ng-bind="ec.holesReadout()" class="ng-binding">Holes number: Any</span><br>
+                    </div><!-- end ngIf: ec.canShowHolesReadout() -->
+                    <!-- ngIf: ec.canShowPricingOptionReadout() -->
+                    <!-- ngIf: ec.canShowCourseNameReadout() --><div data-ng-if="ec.canShowCourseNameReadout()" class="ng-scope">
+                        <span data-ng-bind="ec.courseNameReadout()" class="ng-binding">Course: Teal Bend</span><br>
+                    </div><!-- end ngIf: ec.canShowCourseNameReadout() -->
+                </div><!-- end ngIf: !ec.isSearchAndHold -->
+                <!-- ngIf: ec.isSearchAndHold -->
+
+                <!-- filters button and date picker, mobile (non-search-and-hold) -->
+                <!-- ngIf: !ec.isSearchAndHold --><div class="visible-xs col-xs-10 ng-scope" data-ng-if="!ec.isSearchAndHold">
+                                
+                    <!-- +/- FILTERS -->
+                    <div class="col-xs-4 nopadding-x m-t-05">
+                        <a class="primary-btn filters" href="javascript:void(0)" data-ng-click="ec.onMobileFiltersClick()">
+                            <i class="fa fa-plus" data-ng-class="ec.mobileFiltersHeaderIconClass()"></i> Filters
+                        </a>
+                    </div>
+
+                    <!-- date picker (mobile only) -->
+                    <div class="col-xs-8 date-input"> <!-- note: in Search-and-Hold mode, mobile uses date-picker INSIDE the filter section (see top of file) -->
+                        <input type="text" placeholder="Select Date" datepicker="" name="mobilePickerDate" id="mobilePickerDate" ng-readonly="ec.filterSettings.date" data-ng-model="ec.filterSettings.date" data-ng-change="ec.onDateChange()" class="m-b-0 ng-pristine ng-untouched ng-valid ng-isolate-scope hasDatepicker" min-date="ec.minDate" max-date="ec.maxDate" aria-describedby="mobilePickerDate" readonly="readonly" style="">
+                        <label aria-labelledby="mobilePickerDate" for="mobilePickerDate" onclick="javascript:void(0)" title="Select a date to reserve a tee time" aria-describedby="mobilePickerDate" class="btn m-b-0" alt="Select a date to reserve a tee time">
+                            <i alt="Select a date to reserve a tee time" class="fa fa-calendar"></i>­
+                        </label>
+                    </div>
+                </div><!-- end ngIf: !ec.isSearchAndHold -->
+                <!-- create space to place fly-out menu properly, mobile (search-and-hold) -->
+                <!-- ngIf: ec.isSearchAndHold -->
+
+                <!-- fly-out menu, mobile -->
+                <fly-out-menu hide-search="true" hide-login-registration="ec.isInMoveReservationState" class="col-sm-5 col-xs-2 nopadding-x p-t-10 p-t-00-xs ng-isolate-scope"><div class="top-nav col-xs-12 p-t-10 p-t-00-xs right fly-out-menu nopadding-x hidden-print">
+    <div class="hidden-xs">
+        <!-- ngIf: (hideLoginRegistration || hideRegistration) && !hideSearch -->
+
+        <!-- ngIf: !isCurrentUser() --><div data-ng-if="!isCurrentUser()" class="ng-scope">
+            <!-- Create New Account / Sign In -->
+            <!-- ngIf: !hideLoginRegistration && !hideRegistration && allowsNewRegistration --><a href="#/create-account" ui-sref="create-account" data-ng-if="!hideLoginRegistration &amp;&amp; !hideRegistration &amp;&amp; allowsNewRegistration" class="ng-scope"><i class="fa fa-user"></i> Create New Account</a><!-- end ngIf: !hideLoginRegistration && !hideRegistration && allowsNewRegistration -->
+            <!-- ngIf: !hideLoginRegistration || hideRegistration --><a href="#/login" ui-sref="login" class="m-l-15 ng-scope" data-ng-if="!hideLoginRegistration || hideRegistration">Sign In</a><!-- end ngIf: !hideLoginRegistration || hideRegistration -->
+        </div><!-- end ngIf: !isCurrentUser() -->
+
+        <!-- ngIf: isCurrentUser() && !hideLoginRegistration -->
+    </div>
+    <div class="visible-xs m-r-10">
+        <span data-ng-click="toggleMenu = !toggleMenu"><i class="fa fa-bars primary-btn"></i></span>
+
+        <!-- My Account / Tee Time Search / Your reservations / Pending / Historic / Contact Information / Membership / Payment Information / View Tee Sheet / Sign Out -->
+        <div class="account-menu account-dekstop-menu ng-hide" data-ng-show="toggleMenu">
+            <!-- ngIf: isCurrentUser() && !hideLoginRegistration -->
+
+            <!-- Tee Time Search / Create New Account / Sign In -->
+            <!-- ngIf: !isCurrentUser() --><ul data-ng-if="!isCurrentUser()" class="ng-scope">
+                <!-- ngIf: hideLoginRegistration || hideRegistration -->
+                <!-- ngIf: !hideLoginRegistration && !hideRegistration && allowsNewRegistration --><li data-ng-if="!hideLoginRegistration &amp;&amp; !hideRegistration &amp;&amp; allowsNewRegistration" class="ng-scope">
+                    <a href="#/create-account" ui-sref="create-account">Create New Account</a>
+                </li><!-- end ngIf: !hideLoginRegistration && !hideRegistration && allowsNewRegistration -->
+                <!-- ngIf: !hideLoginRegistration || hideRegistration --><li data-ng-if="!hideLoginRegistration || hideRegistration" class="ng-scope">
+                    <a href="#/login" ui-sref="login">Sign In</a>
+                </li><!-- end ngIf: !hideLoginRegistration || hideRegistration -->
+            </ul><!-- end ngIf: !isCurrentUser() -->
+        </div>
+    </div>
+</div>
+</fly-out-menu></nav>
+
+            <!-- ngIf: ec.isInit -->
+
+            <!-- ngIf: !ec.isSearchAndHold --><div data-ng-if="!ec.isSearchAndHold" class="ng-scope">
+                <!-- banner message -->
+                <div class="col-xs-12 nopadding" data-ng-show="ec.showBannerMessage &amp;&amp; !ec.isFinalDBtimeout">
+                    <div id="bannerMessage" class="col-sm-12 col-xs-12"><span class="ng-scope">Not finding your desired tee time? Try using our virtual booking assistant NoTeefy. Get an alert when your desired tee time becomes available. Sign up here: </span><a href="https://tealbendgolf.noteefy.app/" class="ng-scope">Virtual Booking Assistant</a></div>
+                </div>
+
+                <!-- tee time grid -->
+                <!-- ngIf: !ec.isInit && !ec.isDBtimeout --><div data-ng-if="!ec.isInit &amp;&amp; !ec.isDBtimeout" class="ng-scope">
+                    <div class="col-xs-12 nopadding-sm main-content ng-pristine ng-untouched ng-valid" ng-model="ec.filterSettings" infinite-scroll="ec.loadData(false)">
+                        <ul class="tee-time-block">
+                            <!-- ngRepeat: t in ec.teetimes -->
+                        </ul>
+                        <div ng-show="ec.isShowNoResultsDisplay() &amp;&amp; !ec.isFinalDBtimeout" class="no-results ng-hide">
+                            <strong ng-bind-html="ec.data.NoTeeTimePrimaryMessage" class="ng-binding">There are no reservations available that meet your search criteria for one of the following reasons:</strong><br>
+                            <span ng-bind-html="ec.data.NoTeeTimeSecondaryMessage" class="ng-binding">The course may be full or closed.  You may be searching too far in advance.  Or an applied search filter may be too narrow.</span>
+                        </div>
+                    </div>
+                </div><!-- end ngIf: !ec.isInit && !ec.isDBtimeout -->
+
+                <!-- timeout message -->
+                <!-- ngIf: ec.isDBtimeout -->
+
+                <!-- timed-out message -->
+                <!-- ngIf: ec.isFinalDBtimeout -->
+            </div><!-- end ngIf: !ec.isSearchAndHold -->
+
+            <!-- white space on mobile to push footer down past filter area -->
+            <!-- ngIf: ec.isSearchAndHold -->
+        </div>
+    </div><!-- end ngIf: !ec.isSafariIniFrame -->
+    <!-- ngIf: ec.isSafariIniFrame -->
+<div class="cg-busy cg-busy-backdrop cg-busy-backdrop-animation ng-scope" ng-show="$cgBusyIsActive() === true"></div><div class="cg-busy cg-busy-animation ng-scope" ng-show="$cgBusyIsActive() === true">
+        <div style="">
+            <div class="loading-indicator">
+                <i class="fa-li fa fa-spinner fa-spin"></i>
+            </div>
+        </div>
+    </div></div>﻿</ui-view>
+            </div>
+            <br>
+            <br>
+            <!-- ngIf: !isSafariIniFrame --><!-- ngInclude: 'app/shared/footer/sub-footer.html' --><div ng-if="!isSafariIniFrame" class="hidden-print ng-scope" data-ng-include="'app/shared/footer/sub-footer.html'"><div class="container ng-scope" data-ng-controller="footerController" data-ng-init="initFooter()">
+    <div class="hidden-xs">
+        <div class="col-xs-12 nopadding">
+            <div class="col-sm-6 left nopadding">
+                <div>
+                    <a data-ng-href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html" target="_blank" class="anchor-link" href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html">Terms</a>
+                </div>
+            </div>
+            <div class="col-sm-6 right nopadding">
+                <span data-ng-bind="PersonalAssistanceText" class="ng-binding"></span> <span data-ng-bind="PersonalAssistancePhone" class="ng-binding"> </span>
+            </div>
+        </div>
+        <div class="nopadding">
+            <div class="col-sm-6 col-xs-12 left center-xs nopadding ng-binding">
+                Copyright © 2026 GolfNow. All Rights Reserved.
+            </div>
+            <div class="col-sm-6 right nopadding">
+                <a href="mailto:" class="ng-binding">­</a>
+            </div>
+            <div class="col-sm-6 col-xs-12 left center-xs nopadding versionTextAlign ng-binding">
+                Version: 1.0.0.0  :  Prod
+            </div>
+        </div>
+    </div>
+    <div class="visible-xs">
+        <div class="col-xs-12 center">
+            <span data-ng-bind="PersonalAssistanceText" class="ng-binding"></span>
+        </div>
+        <div class="col-xs-12 center">
+            <a href="tel: " data-ng-bind="PersonalAssistancePhone + '.'" alt="Contact Phone" class="ng-binding"> .</a>
+        </div>
+        <div class="col-xs-12 center">
+            <a href="mailto:" class="ng-binding">­ </a>
+        </div>
+        <div class="col-xs-12 center ng-binding">
+            Copyright © 2026 GolfNow. All Rights Reserved.
+        </div>
+        <div class="col-xs-12 center ng-binding">
+            Version: 1.0.0.0  :  Prod
+        </div>
+        <div class="col-xs-12 center">
+            <a data-ng-href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html" target="_blank" class="anchor-link" href="http://www.ezlinks.com/infodisplay/solutioncenter/privacypolicydefault.html">Terms</a>
+        </div>
+    </div>
+</div>
+</div><!-- end ngIf: !isSafariIniFrame -->
+            <!-- ngIf: !isSafariIniFrame --><!-- ngInclude: 'app/shared/footer/footer.html' --><div ng-if="!isSafariIniFrame" data-ng-include="'app/shared/footer/footer.html'" class="ng-scope"><!--<footer class="footer" ng-init="initFooter()">
+    <div class="bottom-footer">
+        <div class="row nopadding">
+            <div class="footer-image">
+                <img class="img-responsive center-block" src={{footerlogo}}/>
+            </div>
+        </div>
+    </div>
+</footer>-->
+
+
+<footer ng-init="initFooter()" class="col-xs-12 nopadding ng-scope"></footer></div><!-- end ngIf: !isSafariIniFrame -->
+        </div>
+    </div>
+    <!-- JavaScript Bundle Managed in gulpfile.js -->
+    <script defer="" src="app/all-9ffb5285aa.min.js" type="text/javascript"></script>
+    <script defer="" src="app/editUserInfo/services/edit-user-info-service.js" type="text/javascript"></script>
+    <script defer="" src="app/confirmation/controllers/confirmation-controller.js" type="text/javascript"></script>
+    <script defer="" src="app/search/data-model/http-interceptor.js" type="text/javascript"></script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9ec7e8fb5af3b1ae',t:'MTc3NjIyNDIyOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border-width: medium; border-style: none; border-color: currentcolor; border-image: initial; visibility: hidden;"></iframe><script defer="" src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon="{&quot;rayId&quot;:&quot;9ec7e8fb5af3b1ae&quot;,&quot;serverTiming&quot;:{&quot;name&quot;:{&quot;cfExtPri&quot;:true,&quot;cfEdge&quot;:true,&quot;cfOrigin&quot;:true,&quot;cfL4&quot;:true,&quot;cfSpeedBrain&quot;:true,&quot;cfCacheStatus&quot;:true}},&quot;version&quot;:&quot;2025.9.1&quot;,&quot;token&quot;:&quot;0f41094787234f798612ac92c11e032f&quot;}" crossorigin="anonymous"></script>
+
+
+<div id="ui-datepicker-div" class="ui-datepicker ui-widget ui-widget-content ui-helper-clearfix ui-corner-all"></div></body></html>
