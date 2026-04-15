@@ -68,6 +68,75 @@ type SpinnerDebugDump = {
   responseSummaries: NetworkResponseSummary[];
 };
 
+type RequestTraceEntry = {
+  url: string;
+  method: string;
+  requestHeaders: Record<string, string>;
+  tokenLikeRequestHeaders: Record<string, string>;
+  postData: string;
+  responseStatus: number | null;
+  responseHeaders: Record<string, string>;
+  responseBody: string;
+};
+
+type HiddenFieldSummary = {
+  tagName: string;
+  type: string;
+  name: string;
+  id: string;
+  className: string;
+  value: string;
+};
+
+type MetaTagSummary = {
+  name: string;
+  id: string;
+  className: string;
+  content: string;
+};
+
+type ScriptTokenSummary = {
+  src: string;
+  snippet: string;
+};
+
+type SearchResultFormElementSummary = {
+  tagName: string;
+  type: string;
+  name: string;
+  id: string;
+  className: string;
+  value: string;
+  text: string;
+};
+
+type HiddenFieldDiagnostics = {
+  hiddenInputs: HiddenFieldSummary[];
+  metaTags: MetaTagSummary[];
+  tokenLikeFields: HiddenFieldSummary[];
+  tokenLikeMetaTags: MetaTagSummary[];
+  tokenLikeScriptTags: ScriptTokenSummary[];
+  searchResultFormElements: SearchResultFormElementSummary[];
+  cookieTokenNames: string[];
+  localStorageTokenKeys: string[];
+  sessionStorageTokenKeys: string[];
+};
+
+type AuthSummary = {
+  hiddenTokenFieldsFound: HiddenFieldSummary[];
+  tokenLikeHeadersPerRequest: Array<{
+    url: string;
+    method: string;
+    tokenLikeRequestHeaders: Record<string, string>;
+  }>;
+  documentCookieContainsTokenLikeNames: boolean;
+  documentCookieTokenNames: string[];
+  localStorageContainsTokenLikeKeys: boolean;
+  localStorageTokenKeys: string[];
+  sessionStorageContainsTokenLikeKeys: boolean;
+  sessionStorageTokenKeys: string[];
+};
+
 function waitForEnter(): Promise<void> {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -108,6 +177,215 @@ function normalizeDate(input: string): string {
 
 function isInterestingNetworkUrl(url: string): boolean {
   return /search|tee|time|rate|slot|inventory|course|ezlinks/i.test(url);
+}
+
+function isTracedApiUrl(url: string): boolean {
+  return [
+    '/api/search/search',
+    '/api/search/init',
+    '/api/login/login',
+    '/api/search/gsahs',
+  ].some((path) => url.includes(path));
+}
+
+function isTokenLikeKey(value: string): boolean {
+  return /(csrf|token|auth|verification|x-requested-with|requested-with)/i.test(
+    value,
+  );
+}
+
+function extractTokenLikeHeaders(
+  headers: Record<string, string>,
+): Record<string, string> {
+  return Object.fromEntries(
+    Object.entries(headers).filter(([key, value]) => {
+      if (key.startsWith(':')) {
+        return false;
+      }
+
+      return isTokenLikeKey(key) || isTokenLikeKey(value);
+    }),
+  );
+}
+
+function redactHeaders(
+  headers: Record<string, string>,
+  redactedKeys: string[],
+): Record<string, string> {
+  const redactedKeySet = new Set(redactedKeys.map((key) => key.toLowerCase()));
+
+  return Object.fromEntries(
+    Object.entries(headers).map(([key, value]) => [
+      key,
+      redactedKeySet.has(key.toLowerCase()) ? '[REDACTED]' : value,
+    ]),
+  );
+}
+
+async function writeRequestTraceFile(
+  traces: RequestTraceEntry[],
+): Promise<void> {
+  await writeFile(
+    'debug-ezlinks-request-trace.json',
+    JSON.stringify(traces, null, 2),
+    'utf8',
+  );
+}
+
+async function writeHiddenFieldsFile(
+  diagnostics: HiddenFieldDiagnostics,
+): Promise<void> {
+  await writeFile(
+    'debug-ezlinks-hidden-fields.json',
+    JSON.stringify(diagnostics, null, 2),
+    'utf8',
+  );
+}
+
+async function writeAuthSummaryFile(summary: AuthSummary): Promise<void> {
+  await writeFile(
+    'debug-ezlinks-auth-summary.json',
+    JSON.stringify(summary, null, 2),
+    'utf8',
+  );
+}
+
+async function collectHiddenFieldDiagnostics(
+  page: Page,
+): Promise<HiddenFieldDiagnostics> {
+  return page.evaluate(() => {
+    const normalizeText = (value: string | null | undefined): string =>
+      (value || '').replace(/\s+/g, ' ').trim();
+
+    const isTokenLike = (value: string): boolean =>
+      /(csrf|token|auth|verification|request)/i.test(value);
+
+    const toHiddenFieldSummary = (element: Element): HiddenFieldSummary => {
+      const htmlElement = element as HTMLInputElement;
+
+      return {
+        tagName: element.tagName.toLowerCase(),
+        type: htmlElement.type || '',
+        name: element.getAttribute('name') || '',
+        id: element.getAttribute('id') || '',
+        className: element.getAttribute('class') || '',
+        value: htmlElement.value || element.getAttribute('value') || '',
+      };
+    };
+
+    const toMetaTagSummary = (element: Element): MetaTagSummary => ({
+      name: element.getAttribute('name') || element.getAttribute('property') || '',
+      id: element.getAttribute('id') || '',
+      className: element.getAttribute('class') || '',
+      content: element.getAttribute('content') || '',
+    });
+
+    const hiddenInputs = Array.from(
+      document.querySelectorAll('input[type="hidden"]'),
+    ).map((element) => toHiddenFieldSummary(element));
+
+    const metaTags = Array.from(document.querySelectorAll('meta')).map((element) =>
+      toMetaTagSummary(element),
+    );
+
+    const tokenLikeFields = Array.from(document.querySelectorAll('input, textarea, select'))
+      .filter((element) => {
+        const joined = [
+          element.getAttribute('name') || '',
+          element.getAttribute('id') || '',
+          element.getAttribute('class') || '',
+        ].join(' ');
+
+        return isTokenLike(joined);
+      })
+      .map((element) => toHiddenFieldSummary(element));
+
+    const tokenLikeMetaTags = metaTags.filter((metaTag) =>
+      isTokenLike(`${metaTag.name} ${metaTag.id} ${metaTag.className} ${metaTag.content}`),
+    );
+
+    const tokenLikeScriptTags = Array.from(document.querySelectorAll('script'))
+      .map((element) => ({
+        src: element.getAttribute('src') || '',
+        text: normalizeText(element.textContent),
+      }))
+      .filter((scriptTag) => isTokenLike(scriptTag.text))
+      .map((scriptTag) => ({
+        src: scriptTag.src,
+        snippet: scriptTag.text.slice(0, 500),
+      }));
+
+    const searchRoot = document.querySelector('.search-result') || document.body;
+    const searchResultFormElements = Array.from(
+      searchRoot.querySelectorAll('form, input, select, textarea, button'),
+    ).map((element) => {
+      const htmlElement = element as
+        | HTMLInputElement
+        | HTMLSelectElement
+        | HTMLTextAreaElement
+        | HTMLButtonElement;
+
+      return {
+        tagName: element.tagName.toLowerCase(),
+        type: 'type' in htmlElement ? htmlElement.type || '' : '',
+        name: element.getAttribute('name') || '',
+        id: element.getAttribute('id') || '',
+        className: element.getAttribute('class') || '',
+        value: 'value' in htmlElement ? htmlElement.value || '' : '',
+        text: normalizeText(htmlElement.textContent).slice(0, 300),
+      };
+    });
+
+    const cookieTokenNames = document.cookie
+      .split(';')
+      .map((part) => part.trim().split('=')[0] || '')
+      .filter((name) => isTokenLike(name));
+
+    const localStorageTokenKeys = Array.from({ length: window.localStorage.length }, (_, index) =>
+      window.localStorage.key(index) || '',
+    ).filter((key) => isTokenLike(key));
+
+    const sessionStorageTokenKeys = Array.from({ length: window.sessionStorage.length }, (_, index) =>
+      window.sessionStorage.key(index) || '',
+    ).filter((key) => isTokenLike(key));
+
+    return {
+      hiddenInputs,
+      metaTags,
+      tokenLikeFields,
+      tokenLikeMetaTags,
+      tokenLikeScriptTags,
+      searchResultFormElements,
+      cookieTokenNames,
+      localStorageTokenKeys,
+      sessionStorageTokenKeys,
+    };
+  });
+}
+
+function buildAuthSummary(
+  hiddenFieldDiagnostics: HiddenFieldDiagnostics,
+  requestTraces: RequestTraceEntry[],
+): AuthSummary {
+  return {
+    hiddenTokenFieldsFound: hiddenFieldDiagnostics.tokenLikeFields,
+    tokenLikeHeadersPerRequest: requestTraces
+      .filter((trace) => isTracedApiUrl(trace.url))
+      .map((trace) => ({
+        url: trace.url,
+        method: trace.method,
+        tokenLikeRequestHeaders: trace.tokenLikeRequestHeaders,
+      })),
+    documentCookieContainsTokenLikeNames:
+      hiddenFieldDiagnostics.cookieTokenNames.length > 0,
+    documentCookieTokenNames: hiddenFieldDiagnostics.cookieTokenNames,
+    localStorageContainsTokenLikeKeys:
+      hiddenFieldDiagnostics.localStorageTokenKeys.length > 0,
+    localStorageTokenKeys: hiddenFieldDiagnostics.localStorageTokenKeys,
+    sessionStorageContainsTokenLikeKeys:
+      hiddenFieldDiagnostics.sessionStorageTokenKeys.length > 0,
+    sessionStorageTokenKeys: hiddenFieldDiagnostics.sessionStorageTokenKeys,
+  };
 }
 
 async function isSpinnerVisible(page: Page): Promise<boolean> {
@@ -382,21 +660,48 @@ export async function getEzLinksTeeTimes(
   date: string,
 ): Promise<TeeTime[]> {
   const normalizedDate = normalizeDate(date);
-  const context = await chromium.launchPersistentContext(
-    '.playwright/ezlinks-profile',
-    {
-    headless: false,
-    slowMo: 50,
-      userAgent:
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36',
-      viewport: { width: 1280, height: 800 },
-    },
-  );
+  let context;
+
+  try {
+    console.log('EZLinks launch using channel=chrome');
+    context = await chromium.launchPersistentContext(
+      '.playwright/ezlinks-profile',
+      {
+        channel: 'chrome',
+        headless: false,
+        slowMo: 50,
+        viewport: { width: 1280, height: 800 },
+      },
+    );
+  } catch (error: unknown) {
+    console.warn('EZLinks chrome channel launch failed, falling back:', error);
+    context = await chromium.launchPersistentContext(
+      '.playwright/ezlinks-profile',
+      {
+        headless: false,
+        slowMo: 50,
+        viewport: { width: 1280, height: 800 },
+      },
+    );
+  }
 
   try {
     const page = context.pages()[0] ?? (await context.newPage());
     const failedRequests: FailedRequestSummary[] = [];
     const responseSummaries: NetworkResponseSummary[] = [];
+    const requestTraces: RequestTraceEntry[] = [];
+    let hiddenFieldDiagnostics: HiddenFieldDiagnostics = {
+      hiddenInputs: [],
+      metaTags: [],
+      tokenLikeFields: [],
+      tokenLikeMetaTags: [],
+      tokenLikeScriptTags: [],
+      searchResultFormElements: [],
+      cookieTokenNames: [],
+      localStorageTokenKeys: [],
+      sessionStorageTokenKeys: [],
+    };
+    let searchRequestReturned403 = false;
 
     page.on('console', (message) => {
       console.log(`[EZLinks console:${message.type()}]`, message.text());
@@ -424,7 +729,53 @@ export async function getEzLinksTeeTimes(
       );
     });
 
-    page.on('response', (response) => {
+    page.on('request', async (request) => {
+      const requestUrl = request.url();
+
+      if (!isTracedApiUrl(requestUrl)) {
+        return;
+      }
+
+      const traceEntry: RequestTraceEntry = {
+        url: requestUrl,
+        method: request.method(),
+        requestHeaders: {},
+        tokenLikeRequestHeaders: {},
+        postData: request.postData() || '',
+        responseStatus: null,
+        responseHeaders: {},
+        responseBody: '',
+      };
+
+      try {
+        traceEntry.requestHeaders = redactHeaders(
+          await request.allHeaders(),
+          ['cookie', 'authorization'],
+        );
+      } catch (error: unknown) {
+        traceEntry.requestHeaders = {
+          error: `Failed to read request headers: ${String(error)}`,
+        };
+      }
+
+      traceEntry.tokenLikeRequestHeaders = extractTokenLikeHeaders(
+        traceEntry.requestHeaders,
+      );
+
+      requestTraces.push(traceEntry);
+
+      console.log('EZLinks traced request method:', traceEntry.method, traceEntry.url);
+      console.log('EZLinks traced request headers:', traceEntry.requestHeaders);
+      console.log(
+        'EZLinks traced token-like request headers:',
+        traceEntry.tokenLikeRequestHeaders,
+      );
+      if (traceEntry.postData) {
+        console.log('EZLinks traced request postData:', traceEntry.postData);
+      }
+    });
+
+    page.on('response', async (response) => {
       const request = response.request();
       const resourceType = request.resourceType();
       const responseUrl = response.url();
@@ -449,6 +800,53 @@ export async function getEzLinksTeeTimes(
           responseSummary.url,
         );
       }
+
+      if (!isTracedApiUrl(responseUrl)) {
+        return;
+      }
+
+      const traceEntry =
+        [...requestTraces]
+          .reverse()
+          .find(
+            (entry) =>
+              entry.url === responseUrl &&
+              entry.method === request.method() &&
+              entry.responseStatus === null,
+          ) || null;
+
+      if (!traceEntry) {
+        return;
+      }
+
+      traceEntry.responseStatus = response.status();
+      if (
+        responseUrl.includes('/api/search/search') &&
+        response.status() === 403
+      ) {
+        searchRequestReturned403 = true;
+      }
+
+      try {
+        traceEntry.responseHeaders = redactHeaders(
+          await response.allHeaders(),
+          ['set-cookie'],
+        );
+      } catch (error: unknown) {
+        traceEntry.responseHeaders = {
+          error: `Failed to read response headers: ${String(error)}`,
+        };
+      }
+
+      try {
+        traceEntry.responseBody = (await response.text()).slice(0, 2000);
+      } catch (error: unknown) {
+        traceEntry.responseBody = `Failed to read response body: ${String(error)}`;
+      }
+
+      console.log('EZLinks traced response status:', traceEntry.responseStatus, responseUrl);
+      console.log('EZLinks traced response headers:', traceEntry.responseHeaders);
+      console.log('EZLinks traced response body:', traceEntry.responseBody);
     });
 
     await page.goto(url, { waitUntil: 'domcontentloaded' });
@@ -477,6 +875,12 @@ export async function getEzLinksTeeTimes(
       console.log('EZLinks updated URL:', page.url());
     }
 
+    hiddenFieldDiagnostics = await collectHiddenFieldDiagnostics(page);
+    await writeHiddenFieldsFile(hiddenFieldDiagnostics);
+    await writeAuthSummaryFile(
+      buildAuthSummary(hiddenFieldDiagnostics, requestTraces),
+    );
+
     await page.waitForTimeout(8000);
 
     if (await isSpinnerVisible(page)) {
@@ -500,6 +904,11 @@ export async function getEzLinksTeeTimes(
         'debug-ezlinks-network.json',
         JSON.stringify(spinnerDebugDump, null, 2),
         'utf8',
+      );
+
+      await writeRequestTraceFile(requestTraces);
+      await writeAuthSummaryFile(
+        buildAuthSummary(hiddenFieldDiagnostics, requestTraces),
       );
 
       return [];
@@ -595,6 +1004,15 @@ export async function getEzLinksTeeTimes(
       'EZLinks matched time-like strings:',
       afterDateChangeDump?.matchedTimes ?? [],
     );
+
+    await writeRequestTraceFile(requestTraces);
+    await writeAuthSummaryFile(
+      buildAuthSummary(hiddenFieldDiagnostics, requestTraces),
+    );
+
+    if (searchRequestReturned403) {
+      return [];
+    }
 
     return [];
   } finally {

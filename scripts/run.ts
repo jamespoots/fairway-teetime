@@ -1,9 +1,11 @@
 import { getEzLinksTeeTimes } from '../adapters/ezlinks';
 
 async function main(): Promise<void> {
+  console.log('Empire Ranch EZLinks test');
+
   const results = await getEzLinksTeeTimes(
-    'https://tealbend.ezlinksgolf.com/',
-    new Date().toISOString().slice(0, 10),
+    'https://empireranch.ezlinksgolf.com/',
+    '2026-04-15',
   );
 
   console.log(results);
