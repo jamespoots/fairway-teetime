@@ -50,6 +50,24 @@ type EzLinksAfterDateChangeDump = {
   matchedTimes: string[];
 };
 
+type FailedRequestSummary = {
+  url: string;
+  errorText: string;
+};
+
+type NetworkResponseSummary = {
+  url: string;
+  status: number;
+};
+
+type SpinnerDebugDump = {
+  title: string;
+  url: string;
+  bodyText: string;
+  failedRequests: FailedRequestSummary[];
+  responseSummaries: NetworkResponseSummary[];
+};
+
 function waitForEnter(): Promise<void> {
   const rl = readline.createInterface({
     input: process.stdin,
@@ -86,6 +104,107 @@ function normalizeDate(input: string): string {
 
   const [, month, day, year] = match;
   return `${month.padStart(2, '0')}/${day.padStart(2, '0')}/${year}`;
+}
+
+function isInterestingNetworkUrl(url: string): boolean {
+  return /search|tee|time|rate|slot|inventory|course|ezlinks/i.test(url);
+}
+
+async function isSpinnerVisible(page: Page): Promise<boolean> {
+  return page.evaluate(() => {
+    const isVisible = (element: Element): boolean => {
+      const htmlElement = element as HTMLElement;
+      const style = window.getComputedStyle(htmlElement);
+      const rect = htmlElement.getBoundingClientRect();
+
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        style.opacity !== '0' &&
+        rect.width > 0 &&
+        rect.height > 0
+      );
+    };
+
+    return Array.from(document.querySelectorAll('*')).some((element) => {
+      if (!isVisible(element)) {
+        return false;
+      }
+
+      const htmlElement = element as HTMLElement;
+      const className = String(htmlElement.className || '');
+      const text = htmlElement.innerText || htmlElement.textContent || '';
+
+      return /spinner|loading/i.test(className) || /loading/i.test(text);
+    });
+  });
+}
+
+async function inspectSpinner(page: Page): Promise<{
+  spinnerOuterHtml: string;
+  parentOuterHtml: string;
+}> {
+  return page.evaluate(() => {
+    const isVisible = (element: Element): boolean => {
+      const htmlElement = element as HTMLElement;
+      const style = window.getComputedStyle(htmlElement);
+      const rect = htmlElement.getBoundingClientRect();
+
+      return (
+        style.display !== 'none' &&
+        style.visibility !== 'hidden' &&
+        style.opacity !== '0' &&
+        rect.width > 0 &&
+        rect.height > 0
+      );
+    };
+
+    const spinnerElement = Array.from(document.querySelectorAll('*')).find(
+      (element) => {
+        if (!isVisible(element)) {
+          return false;
+        }
+
+        const htmlElement = element as HTMLElement;
+        const className = String(htmlElement.className || '');
+        const text = htmlElement.innerText || htmlElement.textContent || '';
+
+        return /spinner|loading/i.test(className) || /loading/i.test(text);
+      },
+    ) as HTMLElement | undefined;
+
+    const parentElement = spinnerElement?.parentElement;
+
+    return {
+      spinnerOuterHtml: spinnerElement?.outerHTML || '',
+      parentOuterHtml: (parentElement?.outerHTML || '').slice(0, 2000),
+    };
+  });
+}
+
+async function collectSpinnerDebugDump(
+  page: Page,
+  failedRequests: FailedRequestSummary[],
+  responseSummaries: NetworkResponseSummary[],
+): Promise<SpinnerDebugDump> {
+  return page.evaluate(
+    ({ recentFailedRequests, recentResponses }) => {
+      const normalizeText = (value: string | null | undefined): string =>
+        (value || '').replace(/\s+/g, ' ').trim();
+
+      return {
+        title: document.title,
+        url: window.location.href,
+        bodyText: normalizeText(document.body?.innerText).slice(0, 5000),
+        failedRequests: recentFailedRequests,
+        responseSummaries: recentResponses,
+      };
+    },
+    {
+      recentFailedRequests: failedRequests,
+      recentResponses: responseSummaries,
+    },
+  );
 }
 
 async function waitForLoadingToClear(page: Page): Promise<void> {
@@ -276,6 +395,62 @@ export async function getEzLinksTeeTimes(
 
   try {
     const page = context.pages()[0] ?? (await context.newPage());
+    const failedRequests: FailedRequestSummary[] = [];
+    const responseSummaries: NetworkResponseSummary[] = [];
+
+    page.on('console', (message) => {
+      console.log(`[EZLinks console:${message.type()}]`, message.text());
+    });
+
+    page.on('pageerror', (error) => {
+      console.error('[EZLinks pageerror]', error);
+    });
+
+    page.on('requestfailed', (request) => {
+      const failedRequest = {
+        url: request.url(),
+        errorText: request.failure()?.errorText || 'unknown error',
+      };
+
+      failedRequests.push(failedRequest);
+      if (failedRequests.length > 30) {
+        failedRequests.shift();
+      }
+
+      console.warn(
+        'EZLinks failed request:',
+        failedRequest.url,
+        failedRequest.errorText,
+      );
+    });
+
+    page.on('response', (response) => {
+      const request = response.request();
+      const resourceType = request.resourceType();
+      const responseUrl = response.url();
+
+      if (
+        (resourceType === 'xhr' || resourceType === 'fetch') &&
+        isInterestingNetworkUrl(responseUrl)
+      ) {
+        const responseSummary = {
+          url: responseUrl,
+          status: response.status(),
+        };
+
+        responseSummaries.push(responseSummary);
+        if (responseSummaries.length > 50) {
+          responseSummaries.shift();
+        }
+
+        console.log(
+          'EZLinks XHR/fetch response:',
+          responseSummary.status,
+          responseSummary.url,
+        );
+      }
+    });
+
     await page.goto(url, { waitUntil: 'domcontentloaded' });
 
     await page.screenshot({ path: 'debug-ezlinks.png', fullPage: true });
@@ -300,6 +475,34 @@ export async function getEzLinksTeeTimes(
 
       console.log('EZLinks updated page title:', await page.title());
       console.log('EZLinks updated URL:', page.url());
+    }
+
+    await page.waitForTimeout(8000);
+
+    if (await isSpinnerVisible(page)) {
+      console.warn('EZLinks spinner still visible after 8 seconds.');
+      await page.screenshot({ path: 'debug-ezlinks-spinner.png', fullPage: true });
+      await writeFile('debug-ezlinks-spinner.html', await page.content(), 'utf8');
+
+      const spinnerInspection = await inspectSpinner(page);
+      console.log('EZLinks spinner outerHTML:', spinnerInspection.spinnerOuterHtml);
+      console.log(
+        'EZLinks spinner parent outerHTML:',
+        spinnerInspection.parentOuterHtml,
+      );
+
+      const spinnerDebugDump = await collectSpinnerDebugDump(
+        page,
+        failedRequests,
+        responseSummaries,
+      );
+      await writeFile(
+        'debug-ezlinks-network.json',
+        JSON.stringify(spinnerDebugDump, null, 2),
+        'utf8',
+      );
+
+      return [];
     }
 
     await waitForLoadingToClear(page);
